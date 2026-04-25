@@ -48,10 +48,12 @@ export async function middleware(request: NextRequest) {
   if (
     pathname.startsWith("/view/") ||
     pathname.startsWith("/_next/") ||
-    pathname.startsWith("/favicon") ||
-    pathname === "/login" ||
-    pathname === "/register"
+    pathname.startsWith("/favicon")
   ) {
+    return NextResponse.next();
+  }
+
+  if (pathname === "/login" || pathname === "/register") {
     const session = await getSessionFromRequest(request);
     if (session.userId) {
       return NextResponse.redirect(new URL("/", request.url));
