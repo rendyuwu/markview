@@ -1,7 +1,7 @@
 {
   "name": "markview",
   "version": "0.1.0",
-  "private": true,
+  "license": "MIT",
   "scripts": {
     "dev": "next dev --port 3344",
     "build": "next build",

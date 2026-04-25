@@ -1,5 +1,8 @@
 # MarkView
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-black.svg)](./LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-black.svg)](./CONTRIBUTING.md)
+
 Personal markdown viewer with shareable links.
 
 ## Features
@@ -49,6 +52,18 @@ Set `ENABLE_REGISTER="true"` in your `.env` to allow anyone to register via `/re
 
 URL imports validate `http`/`https` schemes only. Private IPs (`10.x`, `172.16-31.x`, `192.168.x`, `127.x`, `::1`, `169.254.x`), localhost, and `.local` hostnames are blocked. Responses are limited to 1MB with a 10-second timeout.
 
-## Tech stack
+## Tech Stack
 
-Next.js, TypeScript, PostgreSQL, Prisma, Tailwind CSS
+Next.js 16, TypeScript, PostgreSQL, Prisma 7, Tailwind CSS
+
+## Contributing
+
+We welcome contributions! Please read our [Contributing Guide](./CONTRIBUTING.md) before submitting a PR.
+
+- [Code of Conduct](./CODE_OF_CONDUCT.md)
+- [Security Policy](./.github/SECURITY.md)
+- [Design System](./DESIGN.md)
+
+## License
+
+[MIT](./LICENSE)
