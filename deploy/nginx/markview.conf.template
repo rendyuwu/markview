@@ -12,12 +12,14 @@ server {
     ssl_protocols       TLSv1.2 TLSv1.3;
     ssl_ciphers         HIGH:!aNULL:!MD5;
 
-    # Only allow Cloudflare IPs
-    include /etc/nginx/snippets/cloudflare-ips.conf;
-    deny all;
-
     # Restore real visitor IP from Cloudflare
+    include /etc/nginx/snippets/cloudflare-ips.conf;
     real_ip_header CF-Connecting-IP;
+
+    # Only allow Cloudflare IPs (checked against original socket IP)
+    if ($is_cloudflare = 0) {
+        return 403;
+    }
 
     # Security headers
     server_tokens off;

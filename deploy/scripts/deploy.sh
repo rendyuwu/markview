@@ -50,10 +50,11 @@ if [[ "${1:-}" == "--first-run" ]]; then
     log "  1. sudo cp deploy/nginx/markview.conf /etc/nginx/sites-available/"
     log "  2. sudo cp deploy/nginx/proxy-params.conf /etc/nginx/snippets/"
     log "  3. sudo cp deploy/nginx/cloudflare-ips.conf /etc/nginx/snippets/"
-    log "  4. sudo ln -s /etc/nginx/sites-available/markview.conf /etc/nginx/sites-enabled/"
-    log "  5. Place Cloudflare origin cert at /etc/ssl/cloudflare/${DOMAIN}.pem and .key"
-    log "  6. sudo nginx -t && sudo systemctl reload nginx"
-    log "  7. Set ENABLE_REGISTER=true, create account, then set back to false"
+    log "  4. sudo cp deploy/nginx/cloudflare-realip-geo.conf /etc/nginx/conf.d/"
+    log "  5. sudo ln -s /etc/nginx/sites-available/markview.conf /etc/nginx/sites-enabled/"
+    log "  6. Place Cloudflare origin cert at /etc/ssl/cloudflare/${DOMAIN}.pem and .key"
+    log "  7. sudo nginx -t && sudo systemctl reload nginx"
+    log "  8. Set ENABLE_REGISTER=true, create account, then set back to false"
 else
     log "Pulling latest code..."
     git pull --ff-only
