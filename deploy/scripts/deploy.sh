@@ -47,7 +47,7 @@ if [[ "${1:-}" == "--first-run" ]]; then
 
     # Run migrations
     log "Running Prisma migrations..."
-    docker compose -f docker-compose.prod.yml exec app npx prisma migrate deploy
+    docker compose -f docker-compose.prod.yml run --rm migrate
 
     log "First run complete!"
     log "Next steps:"
@@ -70,7 +70,7 @@ else
 
     # Run any new migrations
     log "Running migrations..."
-    docker compose -f docker-compose.prod.yml exec app npx prisma migrate deploy
+    docker compose -f docker-compose.prod.yml run --rm migrate
 
     log "Deploy complete!"
     log "If Nginx config changed: sudo cp deploy/nginx/markview.conf /etc/nginx/sites-available/ && sudo nginx -t && sudo systemctl reload nginx"

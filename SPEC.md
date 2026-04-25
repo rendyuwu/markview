@@ -145,7 +145,7 @@ enum SourceType { PASTE URL }
 | T20 | x | widen view page container for desktop | V18,B6 |
 | T21 | x | add responsive layout to all pages (editor stack, auth forms, home, header) | V19,B7 |
 | T22 | x | copy `prisma.config.ts` into Docker runner stage | V20,B8 |
-| T23 | . | add `migrate` service to docker-compose.prod.yml (builder target, profiles migrate) + update deploy.sh to use `docker compose run --rm migrate` | V21,B9 |
+| T23 | x | add `migrate` service to docker-compose.prod.yml (builder target, profiles migrate) + update deploy.sh to use `docker compose run --rm migrate` | V21,B9 |
 
 ## §B — Bugs
 
