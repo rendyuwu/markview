@@ -45,7 +45,7 @@ Personal markdown viewer. Auth'd users paste/import markdown → stored PostgreS
 | `/api/markdown` | POST | auth | create doc from paste or URL |
 | `/api/markdown/[id]` | PUT | auth+owner | update doc |
 | `/api/markdown/[id]` | DELETE | auth+owner | soft-delete doc |
-| `/api/view/[token]` | GET | none | fetch rendered doc (public, checks expiry) |
+| `/view/[token]` | RSC page | none | render doc (public, checks expiry + opportunistic cleanup) |
 
 ### I.env — Environment Variables
 | var | required | default | purpose |
@@ -83,13 +83,25 @@ MarkdownDocument {
 enum SourceType { PASTE URL }
 ```
 
+### I.ui — Shared Components
+| component | purpose |
+|---|---|
+| Button | primary/secondary/CTA button w/ pill radius |
+| Input | text input w/ pill radius |
+| Textarea | multiline input w/ container radius |
+| AuthForm | shared form wrapper for login/register/setup |
+| Header | top nav bar w/ logout |
+| LogoutButton | client-side logout trigger |
+| ExpiredOrNotFound | fallback for expired/missing docs |
+| MarkdownRenderer | sanitized markdown → HTML (single instance, V13) |
+
 ## §V — Invariants
 
 - V1: Setup page returns 404 when ≥1 user exists in DB
 - V2: All POST/PUT/DELETE on `/api/markdown/*` reject 401 if no valid session
 - V3: `/api/auth/register` returns 403 when `ENABLE_REGISTER !== "true"`
 - V4: `/api/auth/setup` returns 403 when ≥1 user exists
-- V5: `/api/view/[token]` returns 404 for expired docs (`expiresAt < now()`) or `isDeleted=true`
+- V5: `/view/[token]` returns 404 for expired docs (`expiresAt < now()`) or `isDeleted=true`
 - V6: MarkdownRenderer sanitizes HTML — no raw `dangerouslySetInnerHTML` without sanitizer
 - V7: URL import blocks private IPs (10.x, 172.16-31.x, 192.168.x, 127.x, ::1, 169.254.x, fc00::/7, fe80::/10), localhost, `.local` hostnames
 - V8: URL import enforces ≤1MB response body + 10s timeout
