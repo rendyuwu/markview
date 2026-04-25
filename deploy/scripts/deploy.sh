@@ -41,10 +41,6 @@ if [[ "${1:-}" == "--first-run" ]]; then
     # Build and start
     docker compose -f docker-compose.prod.yml up -d --build
 
-    # Wait for DB
-    log "Waiting for database..."
-    sleep 5
-
     # Run migrations
     log "Running Prisma migrations..."
     docker compose -f docker-compose.prod.yml run --rm migrate

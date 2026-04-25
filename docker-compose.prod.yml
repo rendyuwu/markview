@@ -39,6 +39,7 @@ services:
       dockerfile: Dockerfile
       target: builder
     command: npx prisma migrate deploy
+    restart: "no"
     env_file:
       - .env.production
     depends_on:
