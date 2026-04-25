@@ -33,6 +33,23 @@ services:
     networks:
       - markview
 
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    command: npx prisma migrate deploy
+    restart: "no"
+    env_file:
+      - .env.production
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles:
+      - migrate
+    networks:
+      - markview
+
 volumes:
   pgdata:
 
