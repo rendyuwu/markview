@@ -149,7 +149,7 @@ enum SourceType { PASTE URL }
 | T22 | x | copy `prisma.config.ts` into Docker runner stage | V20,B8 |
 | T23 | x | add `migrate` service to docker-compose.prod.yml (builder target, profiles migrate) + update deploy.sh to use `docker compose run --rm migrate` | V21,B9 |
 | T24 | x | move `include cloudflare-ips.conf` inside server block before `deny all` in nginx template | V22,B10 |
-| T25 | . | add middleware guard: redirect authed users from `/login`,`/register` to `/` | V23,B11 |
+| T25 | x | add middleware guard: redirect authed users from `/login`,`/register` to `/` | V23,B11 |
 
 ## §B — Bugs
 

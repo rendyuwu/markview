@@ -52,6 +52,10 @@ export async function middleware(request: NextRequest) {
     pathname === "/login" ||
     pathname === "/register"
   ) {
+    const session = await getSessionFromRequest(request);
+    if (session.userId) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
     return NextResponse.next();
   }
 
