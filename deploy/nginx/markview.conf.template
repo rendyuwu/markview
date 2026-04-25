@@ -1,0 +1,58 @@
+# Cloudflare IP ranges — update periodically via update-cloudflare-ips.sh
+include /etc/nginx/snippets/cloudflare-ips.conf;
+
+# Rate limiting — keyed on real visitor IP (CF-Connecting-IP)
+limit_req_zone $http_cf_connecting_ip zone=markview_api:10m rate=10r/s;
+limit_req_zone $http_cf_connecting_ip zone=markview_login:10m rate=3r/m;
+
+server {
+    listen 443 ssl;
+    server_name ${DOMAIN};
+
+    # Cloudflare Origin Certificate
+    ssl_certificate     /etc/ssl/cloudflare/${DOMAIN}.pem;
+    ssl_certificate_key /etc/ssl/cloudflare/${DOMAIN}.key;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+    # Only allow Cloudflare IPs
+    deny all;
+
+    # Restore real visitor IP from Cloudflare
+    real_ip_header CF-Connecting-IP;
+
+    # Security headers
+    server_tokens off;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+    # Rate limit login endpoint
+    location /api/auth/login {
+        limit_req zone=markview_login burst=5 nodelay;
+        proxy_pass http://127.0.0.1:3344;
+        include /etc/nginx/snippets/proxy-params.conf;
+    }
+
+    # Rate limit API endpoints
+    location /api/ {
+        limit_req zone=markview_api burst=20 nodelay;
+        proxy_pass http://127.0.0.1:3344;
+        include /etc/nginx/snippets/proxy-params.conf;
+    }
+
+    # All other requests
+    location / {
+        proxy_pass http://127.0.0.1:3344;
+        include /etc/nginx/snippets/proxy-params.conf;
+    }
+}
+
+# Redirect HTTP to HTTPS (Cloudflare handles this, but just in case)
+server {
+    listen 80;
+    server_name ${DOMAIN};
+    deny all;
+    return 301 https://$host$request_uri;
+}
