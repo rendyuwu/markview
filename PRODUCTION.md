@@ -78,6 +78,7 @@ This builds containers, starts services, runs DB migrations, and renders Nginx c
 sudo cp deploy/nginx/markview.conf /etc/nginx/sites-available/
 sudo cp deploy/nginx/proxy-params.conf /etc/nginx/snippets/
 sudo cp deploy/nginx/cloudflare-ips.conf /etc/nginx/snippets/
+sudo cp deploy/nginx/cloudflare-realip-geo.conf /etc/nginx/conf.d/
 sudo ln -s /etc/nginx/sites-available/markview.conf /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl reload nginx
 ```
@@ -85,9 +86,10 @@ sudo nginx -t && sudo systemctl reload nginx
 For RHEL/Alma (no `sites-available`):
 
 ```bash
-sudo cp deploy/nginx/markview.conf /etc/nginx/conf.d/
+sudo cp deploy/nginx/markview.conf /etc/nginx/conf.d/markview.conf
 sudo cp deploy/nginx/proxy-params.conf /etc/nginx/snippets/
 sudo cp deploy/nginx/cloudflare-ips.conf /etc/nginx/snippets/
+sudo cp deploy/nginx/cloudflare-realip-geo.conf /etc/nginx/conf.d/
 sudo nginx -t && sudo systemctl reload nginx
 ```
 
@@ -140,7 +142,7 @@ gunzip < /var/backups/markview/markview_20260425_020000.sql.gz | \
 ## Security Checklist
 
 - [ ] Cloudflare SSL mode set to Full (Strict)
-- [ ] Nginx only accepts Cloudflare IPs (`deny all` + CF allowlist)
+- [ ] Nginx only accepts Cloudflare IPs (`geo $realip_remote_addr` allowlist)
 - [ ] Firewall only opens ports 80, 443, SSH
 - [ ] SSH uses key auth, password auth disabled
 - [ ] fail2ban running on SSH
@@ -162,7 +164,8 @@ gunzip < /var/backups/markview/markview_20260425_020000.sql.gz | \
 | `.env.production.example` | Production env var template |
 | `deploy/nginx/markview.conf.template` | Nginx config template (`${DOMAIN}` substituted at deploy) |
 | `deploy/nginx/proxy-params.conf` | Shared proxy header snippet |
-| `deploy/nginx/cloudflare-ips.conf` | Cloudflare IP allowlist + real_ip config |
+| `deploy/nginx/cloudflare-ips.conf` | Cloudflare `set_real_ip_from` config |
+| `deploy/nginx/cloudflare-realip-geo.conf` | Cloudflare IP access control (`geo` block, http context) |
 | `deploy/scripts/deploy.sh` | Build and deploy script |
 | `deploy/scripts/backup-db.sh` | Database backup with rotation |
 | `deploy/scripts/update-cloudflare-ips.sh` | Cloudflare IP range updater |
