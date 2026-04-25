@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file = guidance for Claude Code (claude.ai/code) working in this repo.
 
 ## Tone
 
@@ -26,30 +26,30 @@ npx prisma generate      # regenerate client after schema changes
 
 ## Architecture
 
-**Next.js 16 App Router** with PostgreSQL (Prisma 7, pg adapter). Cookie-based auth via iron-session + bcrypt. No external auth provider.
+**Next.js 16 App Router** w/ PostgreSQL (Prisma 7, pg adapter). Cookie-based auth via iron-session + bcrypt. No external auth provider.
 
 ### Auth flow — two layers
-1. **Middleware** (`src/middleware.ts`) — checks session on protected page routes (`/`, `/editor/*`) and non-GET `/api/markdown/*`. Redirects unauthenticated page requests to `/login`, returns 401 for API.
-2. **Route-level guard** (`src/lib/auth-guard.ts`) — `requireAuth(request)` throws a 401 Response if no session. Used inside individual API route handlers as a second check.
+1. **Middleware** (`src/middleware.ts`) — checks session on protected page routes (`/`, `/editor/*`) and non-GET `/api/markdown/*`. Redirects unauthed page requests to `/login`, returns 401 for API.
+2. **Route-level guard** (`src/lib/auth-guard.ts`) — `requireAuth(request)` throws 401 Response if no session. Used inside API route handlers as second check.
 
 Session helpers in `src/lib/auth.ts` — `getSession()` (server components/actions via `cookies()`), `createSession()`, `destroySession()`, `hashPassword()`, `verifyPassword()`.
 
 ### Data model
-Two models in `prisma/schema.prisma`: `User` and `MarkdownDocument`. Prisma client generated to `src/generated/prisma/`. Documents have a unique `shareToken` (nanoid), 7-day `expiresAt`, and soft-delete via `isDeleted`.
+Two models in `prisma/schema.prisma`: `User` and `MarkdownDocument`. Prisma client generated to `src/generated/prisma/`. Documents have unique `shareToken` (nanoid), 7-day `expiresAt`, soft-delete via `isDeleted`.
 
 ### Key patterns
-- **View page is RSC** — `/view/[token]` is a server component (`src/app/view/[token]/page.tsx`), not an API route. Runs opportunistic expired-doc cleanup on load.
-- **Single MarkdownRenderer** — `src/components/MarkdownRenderer.tsx` used in both view page and editor preview. Uses react-markdown + rehype-sanitize + remark-gfm.
-- **URL import** — `src/lib/url-import.ts` with SSRF protection (private IP blocking, redirect validation, 1MB/10s limits).
-- **Editor** — `/editor` and `/editor/[id]` share `src/app/editor/editor-client.tsx` (client component with side-by-side editing).
+- **View page = RSC** — `/view/[token]` server component (`src/app/view/[token]/page.tsx`), not API route. Runs opportunistic expired-doc cleanup on load.
+- **Single MarkdownRenderer** — `src/components/MarkdownRenderer.tsx` used in view page + editor preview. Uses react-markdown + rehype-sanitize + remark-gfm.
+- **URL import** — `src/lib/url-import.ts` w/ SSRF protection (private IP blocking, redirect validation, 1MB/10s limits).
+- **Editor** — `/editor` and `/editor/[id]` share `src/app/editor/editor-client.tsx` (client component, side-by-side editing).
 
 ### Design system
 Ollama-inspired grayscale UI defined in `DESIGN.md`. Strict rules: grayscale only (no chromatic color except blue focus ring), pill radius (9999px) for interactive elements, 12px for containers, zero shadows, SF Pro Rounded for display headings, font weight 400 or 500 only.
 
 ## Next.js 16 warning
 
-This is NOT the Next.js you know. This version has breaking changes — APIs, conventions, and file structure may differ from training data. Read relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+NOT Next.js you know. Breaking changes — APIs, conventions, file structure may differ from training data. Read relevant guide in `node_modules/next/dist/docs/` before writing code. Heed deprecation notices.
 
 ## Spec-driven development
 
-This project uses `SPEC.md` as the source of truth. Sections: §G (goal), §C (constraints), §I (interfaces), §V (invariants), §T (tasks), §B (bugs). Use `/ck:check` to audit drift between spec and code. Use `/ck:spec` to amend the spec. Use `/ck:build` to implement against it.
+Project uses `SPEC.md` as source of truth. Sections: §G (goal), §C (constraints), §I (interfaces), §V (invariants), §T (tasks), §B (bugs). `/ck:check` = audit drift. `/ck:spec` = amend spec. `/ck:build` = implement against it.
