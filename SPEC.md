@@ -119,6 +119,7 @@ enum SourceType { PASTE URL }
 - V20: `prisma.config.ts` must be present in any container running Prisma CLI — Prisma 7 reads datasource URL from config file, not schema
 - V21: Migrations run in ephemeral one-off container, never inside production app container — app image stays lean, migration failure doesn't affect running app
 - V22: Nginx access control must use `geo $realip_remote_addr` block (http context), not `allow`/`deny` — `set_real_ip_from` rewrites `$remote_addr` to visitor IP before `allow`/`deny` evaluates, so `deny all` blocks real visitors
+- V23: Authenticated users hitting `/login` or `/register` → middleware redirects to `/`
 
 ## §T — Tasks
 
@@ -149,6 +150,7 @@ enum SourceType { PASTE URL }
 | T23 | x | add `migrate` service to docker-compose.prod.yml (builder target, profiles migrate) + update deploy.sh to use `docker compose run --rm migrate` | V21,B9 |
 | T24 | x | move `include cloudflare-ips.conf` inside server block before `deny all` in nginx template | V22,B10 |
 | T25 | x | replace `allow`/`deny` with `geo $realip_remote_addr` block — `set_real_ip_from` rewrites `$remote_addr` before access check | V22,B10 |
+| T26 | x | add middleware guard: redirect authed users from `/login`,`/register` to `/` | V23,B11 |
 
 ## §B — Bugs
 
@@ -164,3 +166,4 @@ enum SourceType { PASTE URL }
 | B8 | 2026-04-25 | `prisma.config.ts` not copied into Docker runner stage — Prisma 7 reads datasource URL from config file, `migrate deploy` fails | copy `prisma.config.ts` into runner stage |
 | B9 | 2026-04-25 | runner Docker stage has no prisma CLI — `deploy.sh` runs migration inside app container, `npx` downloads at runtime | use one-off `migrate` service targeting builder stage w/ `profiles: ["migrate"]`, V21 |
 | B10 | 2026-04-25 | `set_real_ip_from` rewrites `$remote_addr` to visitor IP before `allow`/`deny` evaluates — `deny all` blocks real visitors even when Cloudflare IP is the socket peer | replace `allow`/`deny` with `geo $realip_remote_addr` block that checks original socket IP, V22 |
+| B11 | 2026-04-25 | middleware passes `/login`,`/register` unconditionally — no session check for auth pages, authed users can revisit login, no redirect to `/` after auth | redirect authed users away from auth pages in middleware, V23 |
