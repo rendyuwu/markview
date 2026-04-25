@@ -116,6 +116,8 @@ enum SourceType { PASTE URL }
 - V17: Editor page use near-full-width layout — side-by-side needs screen real estate
 - V18: View page use wider container on desktop (max-w-[58rem])
 - V19: All pages responsive — editor stacks vertical on mobile, view/home/auth pages readable on small screens
+- V20: `prisma.config.ts` must be present in any container running Prisma CLI — Prisma 7 reads datasource URL from config file, not schema
+- V21: Migrations run in ephemeral one-off container, never inside production app container — app image stays lean, migration failure doesn't affect running app
 
 ## §T — Tasks
 
@@ -142,6 +144,8 @@ enum SourceType { PASTE URL }
 | T19 | x | widen editor layout to near-full-screen | V17,B5 |
 | T20 | x | widen view page container for desktop | V18,B6 |
 | T21 | x | add responsive layout to all pages (editor stack, auth forms, home, header) | V19,B7 |
+| T22 | x | copy `prisma.config.ts` into Docker runner stage | V20,B8 |
+| T23 | . | add `migrate` service to docker-compose.prod.yml (builder target, profiles migrate) + update deploy.sh to use `docker compose run --rm migrate` | V21,B9 |
 
 ## §B — Bugs
 
@@ -154,3 +158,5 @@ enum SourceType { PASTE URL }
 | B5 | 2026-04-25 | editor max-w-7xl too narrow for side-by-side dual pane | widen to near-full-screen, V17 |
 | B6 | 2026-04-25 | view page max-w-3xl too narrow on desktop | widen to max-w-4xl or max-w-5xl, V18 |
 | B7 | 2026-04-25 | no responsive breakpoints — pages unreadable/unusable on mobile | add responsive layout across all pages, V19 |
+| B8 | 2026-04-25 | `prisma.config.ts` not copied into Docker runner stage — Prisma 7 reads datasource URL from config file, `migrate deploy` fails | copy `prisma.config.ts` into runner stage |
+| B9 | 2026-04-25 | runner Docker stage has no prisma CLI — `deploy.sh` runs migration inside app container, `npx` downloads at runtime | use one-off `migrate` service targeting builder stage w/ `profiles: ["migrate"]`, V21 |
