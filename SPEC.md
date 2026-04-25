@@ -118,6 +118,7 @@ enum SourceType { PASTE URL }
 - V19: All pages responsive — editor stacks vertical on mobile, view/home/auth pages readable on small screens
 - V20: `prisma.config.ts` must be present in any container running Prisma CLI — Prisma 7 reads datasource URL from config file, not schema
 - V21: Migrations run in ephemeral one-off container, never inside production app container — app image stays lean, migration failure doesn't affect running app
+- V22: Nginx `allow`/`deny` directives and `include cloudflare-ips.conf` must be in same context (server block) — nginx evaluates access control per-context
 
 ## §T — Tasks
 
@@ -146,6 +147,7 @@ enum SourceType { PASTE URL }
 | T21 | x | add responsive layout to all pages (editor stack, auth forms, home, header) | V19,B7 |
 | T22 | x | copy `prisma.config.ts` into Docker runner stage | V20,B8 |
 | T23 | x | add `migrate` service to docker-compose.prod.yml (builder target, profiles migrate) + update deploy.sh to use `docker compose run --rm migrate` | V21,B9 |
+| T24 | x | move `include cloudflare-ips.conf` inside server block before `deny all` in nginx template | V22,B10 |
 
 ## §B — Bugs
 
@@ -160,3 +162,4 @@ enum SourceType { PASTE URL }
 | B7 | 2026-04-25 | no responsive breakpoints — pages unreadable/unusable on mobile | add responsive layout across all pages, V19 |
 | B8 | 2026-04-25 | `prisma.config.ts` not copied into Docker runner stage — Prisma 7 reads datasource URL from config file, `migrate deploy` fails | copy `prisma.config.ts` into runner stage |
 | B9 | 2026-04-25 | runner Docker stage has no prisma CLI — `deploy.sh` runs migration inside app container, `npx` downloads at runtime | use one-off `migrate` service targeting builder stage w/ `profiles: ["migrate"]`, V21 |
+| B10 | 2026-04-25 | `include cloudflare-ips.conf` at http context, `deny all` inside server block — different nginx contexts, allow directives never reach server block → all requests 403 | move include inside server block before `deny all`, V22 |
