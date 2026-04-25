@@ -55,8 +55,8 @@ export function AuthForm({
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-80px)] items-center justify-center px-4">
-      <div className="w-full max-w-md border border-light-gray rounded-container p-8">
+    <div className="flex min-h-[calc(100vh-80px)] items-center justify-center px-4 sm:px-6">
+      <div className="w-full max-w-md border border-light-gray rounded-container p-6 sm:p-8">
         <h1 className="text-2xl font-display font-medium text-pure-black mb-6 text-center">
           {title}
         </h1>

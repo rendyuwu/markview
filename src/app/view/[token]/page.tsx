@@ -33,7 +33,7 @@ export default async function ViewPage({
   });
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <div className="max-w-[58rem] mx-auto px-4 sm:px-6 py-12">
       {doc.title && (
         <h1 className="font-display text-4xl font-medium text-pure-black mb-2" style={{ lineHeight: 1.1 }}>
           {doc.title}

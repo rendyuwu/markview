@@ -9,7 +9,7 @@ export async function Header() {
   const isLoggedIn = !!session.userId;
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto w-full">
+    <header className="flex items-center justify-between px-4 sm:px-6 lg:px-10 py-4 w-full">
       <Link href="/" className="font-display font-medium text-xl text-pure-black">
         {appName}
       </Link>

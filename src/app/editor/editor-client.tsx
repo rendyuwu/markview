@@ -104,7 +104,7 @@ export function EditorClient({
   }
 
   return (
-    <div className="flex flex-col flex-1 max-w-7xl mx-auto w-full px-4 py-6 gap-4">
+    <div className="flex flex-col flex-1 w-full px-4 sm:px-6 lg:px-10 py-6 gap-4">
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
         <input
           type="text"
@@ -138,7 +138,7 @@ export function EditorClient({
       {currentShareToken && (
         <div className="flex items-center gap-2 text-sm">
           <span className="text-stone">Share link:</span>
-          <code className="text-xs bg-snow border border-light-gray rounded-container px-3 py-1 font-mono text-mid-gray truncate max-w-md">
+          <code className="text-xs bg-snow border border-light-gray rounded-container px-3 py-1 font-mono text-mid-gray truncate max-w-[200px] sm:max-w-md">
             {shareUrl}
           </code>
           <Button variant="secondary" onClick={copyShareLink} className="text-xs !px-3 !py-1">

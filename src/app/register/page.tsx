@@ -6,7 +6,7 @@ export default function RegisterPage() {
 
   if (!enableRegister) {
     return (
-      <div className="flex min-h-[calc(100vh-80px)] items-center justify-center px-4">
+      <div className="flex min-h-[calc(100vh-80px)] items-center justify-center px-4 sm:px-6">
         <div className="text-center">
           <p className="text-lg text-stone font-body mb-4">
             Registration is currently disabled.

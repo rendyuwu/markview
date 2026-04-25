@@ -113,6 +113,9 @@ enum SourceType { PASTE URL }
 - V14: External links in rendered markdown get `target="_blank" rel="noopener noreferrer"`
 - V15: Opportunistic cleanup: on view-page load, delete expired docs (batch, limit 100)
 - V16: UI follows DESIGN.md — grayscale only, pill (9999px) for interactive, 12px for containers, zero shadows, SF Pro Rounded for display headings
+- V17: Editor page use near-full-width layout — side-by-side needs screen real estate
+- V18: View page use wider container on desktop (max-w-[58rem])
+- V19: All pages responsive — editor stacks vertical on mobile, view/home/auth pages readable on small screens
 
 ## §T — Tasks
 
@@ -136,6 +139,9 @@ enum SourceType { PASTE URL }
 | T16 | x | apply DESIGN.md styling across all pages | V16,C3 |
 | T17 | x | add .env.example + README w/ setup instructions | C12,I.env |
 | T18 | x | lint + typecheck + build — fix all errors | C1 |
+| T19 | x | widen editor layout to near-full-screen | V17,B5 |
+| T20 | x | widen view page container for desktop | V18,B6 |
+| T21 | x | add responsive layout to all pages (editor stack, auth forms, home, header) | V19,B7 |
 
 ## §B — Bugs
 
@@ -145,3 +151,6 @@ enum SourceType { PASTE URL }
 | B2 | 2025-04-25 | Setup API TOCTOU — concurrent requests both see count=0 | wrapped in `prisma.$transaction()` |
 | B3 | 2025-04-25 | IPv6-mapped IPv4 (`::ffff:127.0.0.1`) bypassed SSRF check | extract embedded IPv4 from `::ffff:` prefix, run through isPrivateIPv4 |
 | B4 | 2025-04-25 | hover:text-black on links violated DESIGN.md no-hover rule | removed hover class |
+| B5 | 2026-04-25 | editor max-w-7xl too narrow for side-by-side dual pane | widen to near-full-screen, V17 |
+| B6 | 2026-04-25 | view page max-w-3xl too narrow on desktop | widen to max-w-4xl or max-w-5xl, V18 |
+| B7 | 2026-04-25 | no responsive breakpoints — pages unreadable/unusable on mobile | add responsive layout across all pages, V19 |
