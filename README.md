@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MarkView
 
-## Getting Started
+Personal markdown viewer with shareable links.
 
-First, run the development server:
+## Features
+
+- Password-based authentication with bcrypt hashing
+- Paste markdown or import from URL
+- Shareable read-only links with unique tokens
+- Side-by-side editor with live preview
+- Automatic 7-day document expiry
+- Ollama-inspired grayscale UI (per DESIGN.md)
+
+## Prerequisites
+
+- Node.js 18+
+- PostgreSQL
+
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repo-url> && cd markview
+npm install
+cp .env.example .env   # fill in DATABASE_URL and SESSION_SECRET
+npx prisma migrate dev  # create tables
+npm run dev             # start dev server at http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## First-time setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+On first run, visit `/setup` to create the admin account. This page is only available when no users exist in the database — once the first user is created, `/setup` returns 404.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Registration
 
-## Learn More
+Public registration is controlled by the `ENABLE_REGISTER` environment variable. It defaults to `"false"`, meaning only the first-user setup flow works.
 
-To learn more about Next.js, take a look at the following resources:
+Set `ENABLE_REGISTER="true"` in your `.env` to allow anyone to register via `/register`. The first-user setup at `/setup` always works regardless of this setting.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `DATABASE_URL` | Yes | — | PostgreSQL connection string (see `.env.example`) |
+| `SESSION_SECRET` | Yes | — | Cookie signing secret (min 32 characters) |
+| `ENABLE_REGISTER` | No | `false` | Allow public registration (`"true"` / `"false"`) |
+| `NEXT_PUBLIC_APP_NAME` | No | `MarkView` | App display name shown in the UI |
 
-## Deploy on Vercel
+## URL import security
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+URL imports validate `http`/`https` schemes only. Private IPs (`10.x`, `172.16-31.x`, `192.168.x`, `127.x`, `::1`, `169.254.x`), localhost, and `.local` hostnames are blocked. Responses are limited to 1MB with a 10-second timeout.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Tech stack
+
+Next.js, TypeScript, PostgreSQL, Prisma, Tailwind CSS
